@@ -1,0 +1,10 @@
+{
+  "name": "@repo/prettier-config",
+  "version": "0.0.0",
+  "description": "Shared Prettier configuration for the jrnl monorepo",
+  "main": "index.js",
+  "private": true,
+  "files": [
+    "index.js"
+  ]
+}
