@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@hono/node-server": "^1.19.2",
+    "@repo/database": "*",
     "hono": "^4.9.6"
   },
   "devDependencies": {
