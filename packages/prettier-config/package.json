@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Shared Prettier configuration for the jrnl monorepo",
   "main": "index.js",
+  "type": "module",
   "private": true,
   "files": [
     "index.js"
