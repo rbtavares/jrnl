@@ -1,0 +1,10 @@
+# Database files - these contain sensitive data and should never be committed
+data/
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Environment variables
+.env*
+!.env.example

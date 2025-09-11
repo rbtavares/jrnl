@@ -1,0 +1,31 @@
+{
+  "name": "@repo/database",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "prebuild": "tsc && node scripts/ensure-db-file.js",
+    "build": "npm run prebuild && npm run db:migrate && tsc",
+    "dev": "npm run prebuild && npm run db:migrate && tsc --watch",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "dotenv": "^17.2.2",
+    "drizzle-orm": "^0.44.5"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@types/better-sqlite3": "^7.6.13",
+    "drizzle-kit": "^0.31.4",
+    "typescript": "^5.9.2"
+  }
+}
