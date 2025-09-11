@@ -1,4 +1,7 @@
 import { defineConfig } from 'drizzle-kit';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 if (!process.env.DATABASE_PATH) {
   throw new Error('DATABASE_PATH is not defined');
