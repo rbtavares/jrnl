@@ -5,7 +5,6 @@ import { db, usersTable } from '@repo/database';
 const app = new Hono();
 
 app.get('/', async c => {
-
   await db.insert(usersTable).values({
     email: Date.now().toString(),
     password: Date.now().toString(),

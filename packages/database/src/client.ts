@@ -1,11 +1,13 @@
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-dotenv.config();
+// Get the directory of this module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-if (!process.env.DATABASE_PATH) {
-  throw new Error('DATABASE_PATH is not defined');
-}
+// Resolve database path relative to the database package directory
+const databasePath = join(__dirname, '..', 'data', 'database.sqlite');
 
-export const db = drizzle(new Database(process.env.DATABASE_PATH));
+export const db = drizzle(new Database(databasePath));
