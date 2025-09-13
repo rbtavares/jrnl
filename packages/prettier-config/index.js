@@ -1,11 +1,13 @@
 export default {
-  semi: true,
-  singleQuote: true,
-  tabWidth: 2,
-  trailingComma: 'es5',
-  printWidth: 80,
-  useTabs: false,
-  bracketSpacing: true,
-  arrowParens: 'avoid',
-  endOfLine: 'lf',
+  printWidth: 120, // line max length
+  tabWidth: 2, // tab size
+  useTabs: false, // use tabs instead of spaces
+  semi: true, // semicolon at the end of the line
+  singleQuote: true, // use single quotes instead of double quotes
+  trailingComma: 'es5', // trailing comma at the end of the line
+  bracketSpacing: true, // bracket spacing
+  objectWrap: 'collapse', // object wrap style
+  bracketSameLine: false, // bracket same line for html tags
+  arrowParens: 'always', // parentheses for arrow functions
+  endOfLine: 'lf', // end of line character
 };
