@@ -1,11 +1,11 @@
 import { sql } from 'drizzle-orm';
 import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 
-// Users
-export const usersTable = sqliteTable('users', {
+// Entries
+export const entriesTable = sqliteTable('entries', {
   id: integer('id').primaryKey({ autoIncrement: true }),
-  email: text('email').notNull(),
-  password: text('password').notNull(),
+  title: text('title').notNull(),
+  content: text('content').notNull(),
   createdAt: text('created_at')
     .notNull()
     .default(sql`(datetime('now'))`),
