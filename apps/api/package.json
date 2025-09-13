@@ -9,7 +9,8 @@
   "dependencies": {
     "@hono/node-server": "^1.19.2",
     "@repo/database": "*",
-    "hono": "^4.9.6"
+    "hono": "^4.9.6",
+    "zod": "^4.1.8"
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
