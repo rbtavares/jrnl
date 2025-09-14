@@ -11,10 +11,7 @@ export interface Entry extends GenericEntry {
   updatedAt: string;
 }
 
-export const GenericEntrySchema = z.object({
-  title: z.string().min(1).max(255),
-  content: z.string(),
-});
+export const GenericEntrySchema = z.object({ title: z.string().min(1).max(255), content: z.string() });
 
 export const EntrySchema = GenericEntrySchema.extend({
   id: z.number().int().positive(),
