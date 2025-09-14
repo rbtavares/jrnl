@@ -1,30 +1,22 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
-import './App.css';
+import AddNewButton from './components/AddNewButton';
+import NoteCard from './components/NoteCard';
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="w-full flex flex-col items-center max-w-screen-lg p-4 mx-auto gap-4">
+      <div className="flex justify-between items-center w-full">
+        <h1 className="text-4xl font-medium">JRNL</h1>
+        <AddNewButton onClick={() => {}} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </>
+
+      <main className="w-full grid grid-cols-3 grid-rows-5 gap-4 aspect-[5/5]">
+        <NoteCard id={1} title="Note 1" content="Note 1 content" edited={new Date()} />
+        <NoteCard id={2} title="Note 2" content="Note 2 content" edited={new Date()} />
+        <NoteCard id={3} title="Note 3" content="Note 3 content" edited={new Date()} />
+        <NoteCard id={4} title="Note 4" content="Note 4 content" edited={new Date()} />
+        <NoteCard id={5} title="Note 5" content="Note 5 content" edited={new Date()} />
+      </main>
+    </div>
   );
 }
 
