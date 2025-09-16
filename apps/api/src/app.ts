@@ -1,10 +1,14 @@
 import { db, entriesTable } from '@repo/database';
 import { eq } from 'drizzle-orm';
 import { Hono } from 'hono';
+import { cors } from 'hono/cors';
 import { GenericEntrySchema } from './types.js';
 
 // Create App
 export const app = new Hono();
+
+//CORS
+app.use('/*', cors())
 
 // @GET /health
 app.get('/health', async (c) => {
