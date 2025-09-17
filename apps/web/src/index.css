@@ -1,1 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+
 @import "tailwindcss";
+
+:root {
+  --font-geist: 'Geist', sans-serif;
+}
+
+@theme {
+  --font-sans: var(--font-geist);
+  --color-background: #F7F9FF;
+
+  /* Text */
+  --color-foreground: #1b1b1b;
+  --color-foreground-primary: #121212;
+  --color-foreground-secondary: #4a4a4a;
+  --color-foreground-muted: #aaaaaa;
+
+  /* Card */
+  --color-card: #FFFFFF;
+  --color-card-border: #EEEEEE;
+  --shadow-card: 0px 0px 3px rgba(0, 0, 0, 0.01),
+    0px 0px 11px rgba(0, 0, 0, 0.02),
+    0px 0px 25px rgba(0, 0, 0, 0.03);
+
+
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}

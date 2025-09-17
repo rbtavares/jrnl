@@ -1,21 +1,39 @@
-import AddNewButton from './components/AddNewButton';
-import NoteCard from './components/NoteCard';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import Sidebar from './components/Sidebar';
+import type { Note } from './types';
+import NoteEditor from './components/NoteEditor';
 
 function App() {
-  return (
-    <div className="w-full flex flex-col items-center max-w-screen-lg p-4 mx-auto gap-4">
-      <div className="flex justify-between items-center w-full">
-        <h1 className="text-4xl font-medium">JRNL</h1>
-        <AddNewButton onClick={() => {}} />
-      </div>
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [notes, setNotes] = useState<Note[]>([]);
 
-      <main className="w-full grid grid-cols-3 grid-rows-5 gap-4 aspect-[5/5]">
-        <NoteCard id={1} title="Note 1" content="Note 1 content" edited={new Date()} />
-        <NoteCard id={2} title="Note 2" content="Note 2 content" edited={new Date()} />
-        <NoteCard id={3} title="Note 3" content="Note 3 content" edited={new Date()} />
-        <NoteCard id={4} title="Note 4" content="Note 4 content" edited={new Date()} />
-        <NoteCard id={5} title="Note 5" content="Note 5 content" edited={new Date()} />
-      </main>
+  useEffect(() => {
+    axios.get('http://localhost:3000/entries').then((res) => {
+      console.log(res.data.entries);
+      setNotes(
+        res.data.entries.map((entry: any) => ({
+          id: entry.id,
+          title: entry.title,
+          content: entry.content,
+          updatedAt: new Date(entry.updatedAt),
+          createdAt: new Date(entry.createdAt),
+        }))
+      );
+    });
+  }, []);
+
+  return (
+    <div className="w-full max-w-screen-2xl flex min-h-screen p-6 gap-6">
+      {/* Sidebar */}
+      <Sidebar notes={notes} onClickNote={(note) => setSelectedNote(note)} />
+
+      {/* Note editor */}
+      {selectedNote ?
+        <NoteEditor note={selectedNote} />
+        :
+        <h1 className="font-light text-lg tracking-wide flex-1 flex items-center justify-center text-foreground-muted">select a note or create a new one to begin writing</h1>
+      }
     </div>
   );
 }

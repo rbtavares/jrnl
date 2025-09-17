@@ -8,7 +8,7 @@ import { GenericEntrySchema } from './types.js';
 export const app = new Hono();
 
 //CORS
-app.use('/*', cors())
+app.use('/*', cors());
 
 // @GET /health
 app.get('/health', async (c) => {
