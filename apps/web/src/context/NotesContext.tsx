@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { Note } from '../types';
-import { NoteSchema } from '../types';
+import type { Note } from '../lib/types';
+import { NoteSchema } from '../lib/types';
 import axios from 'axios';
 import { z } from 'zod';
 
@@ -107,11 +107,18 @@ export function NotesProvider({ children }: NotesProviderProps) {
     try {
       setError(null);
       const response = await axios.post('http://localhost:3000/entries', noteData || {
-        title: 'New Note',
+        title: '',
         content: '',
       });
 
-      dispatch({ type: 'ADD_NOTE', payload: response.data.entry });
+      const note = NoteSchema.parse({
+        ...response.data.entry,
+        createdAt: new Date(response.data.entry.createdAt),
+        updatedAt: new Date(response.data.entry.updatedAt)
+      });
+
+      dispatch({ type: 'ADD_NOTE', payload: note });
+      setSelectedNote(note);
       return;
     } catch (error) {
       setError('Failed to add note');
@@ -126,8 +133,6 @@ export function NotesProvider({ children }: NotesProviderProps) {
    * @param updates - The updates to apply to the note
    */
   const updateNote = async (id: number, updates: Partial<Pick<Note, 'title' | 'content'>>) => {
-
-    console.log('Updating note to: ', updates.title, updates.content)
 
     try {
       setError(null);
