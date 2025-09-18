@@ -1,16 +1,13 @@
-import { CheckCircleIcon, CircleNotchIcon, FloppyDiskIcon, TrashIcon } from "@phosphor-icons/react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useNotes } from "../context/NotesContext";
-import { formatRelativeTime } from "../lib/utils";
+import { CheckCircleIcon, CircleNotchIcon, FloppyDiskIcon, TrashIcon } from '@phosphor-icons/react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNotes } from '../context/NotesContext';
+import { formatRelativeTime } from '../lib/utils';
 
 // Editor Status
 
-const NoteEditorStatus = {
-  Saving: 'saving',
-  Saved: 'saved',
-} as const;
+const NoteEditorStatus = { Saving: 'saving', Saved: 'saved' } as const;
 
-type NoteEditorStatus = typeof NoteEditorStatus[keyof typeof NoteEditorStatus];
+type NoteEditorStatus = (typeof NoteEditorStatus)[keyof typeof NoteEditorStatus];
 
 function StatusIndicator({ status }: { status: NoteEditorStatus }) {
   return (
@@ -34,7 +31,6 @@ function StatusIndicator({ status }: { status: NoteEditorStatus }) {
 // Note Editor
 
 function NoteEditor() {
-
   const { selectedNote, updateNote } = useNotes();
 
   const [title, setTitle] = useState(selectedNote?.title || '');
@@ -61,7 +57,10 @@ function NoteEditor() {
         // Trigger immediate save if there were pending changes
         const { title: currentTitle, content: currentContent } = currentValuesRef.current;
         const currentSelectedNote = selectedNoteRef.current;
-        if (currentSelectedNote && (currentTitle !== currentSelectedNote.title || currentContent !== currentSelectedNote.content)) {
+        if (
+          currentSelectedNote &&
+          (currentTitle !== currentSelectedNote.title || currentContent !== currentSelectedNote.content)
+        ) {
           updateNoteRef.current(currentSelectedNote.id, { title: currentTitle, content: currentContent });
         }
       }
@@ -100,10 +99,7 @@ function NoteEditor() {
 
     // Simulate async save operation
     setTimeout(() => {
-      updateNoteRef.current(currentSelectedNote.id, {
-        title: currentTitle,
-        content: currentContent
-      });
+      updateNoteRef.current(currentSelectedNote.id, { title: currentTitle, content: currentContent });
 
       setStatus(NoteEditorStatus.Saved);
 
@@ -144,24 +140,35 @@ function NoteEditor() {
 
   return (
     <div className="flex-1 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 relative flex flex-col">
-      <input className="text-4xl font-semibold focus:outline-none" value={title} onChange={handleTitleChange} placeholder="Your note title..." />
-      <textarea className="text-base/snug text-foreground-secondary focus:outline-none flex-1 resize-none" value={content} onChange={handleContentChange} placeholder="A long note about your day..." />
+      <input
+        className="text-4xl font-semibold focus:outline-none"
+        value={title}
+        onChange={handleTitleChange}
+        placeholder="Your note title..."
+      />
+      <textarea
+        className="text-base/snug text-foreground-secondary focus:outline-none flex-1 resize-none"
+        value={content}
+        onChange={handleContentChange}
+        placeholder="A long note about your day..."
+      />
 
       {/* Editor actions */}
-      <button className='hover:scale-110 active:scale-95 absolute bottom-3 right-3 aspect-square p-1.5 flex items-center justify-center cursor-pointer text-red-500/50 hover:text-red-500/100 transition-all duration-300'>
-        <TrashIcon weight="bold" className='transition-all duration-300' />
+      <button className="hover:scale-110 active:scale-95 absolute bottom-3 right-3 aspect-square p-1.5 flex items-center justify-center cursor-pointer text-red-500/50 hover:text-red-500/100 transition-all duration-300">
+        <TrashIcon weight="bold" className="transition-all duration-300" />
       </button>
-
 
       {/* Status indicator / last edited at */}
       <div className="absolute bottom-3 left-4 text-xs">
-        {status ?
+        {status ? (
           <StatusIndicator status={status} />
-          :
-          <span className="text-foreground-muted">Last edited {formatRelativeTime((new Date().getTime() - (selectedNote?.updatedAt.getTime() || 0)) / 1000)} ago</span>
-        }
+        ) : (
+          <span className="text-foreground-muted">
+            Last edited {formatRelativeTime((new Date().getTime() - (selectedNote?.updatedAt.getTime() || 0)) / 1000)}{' '}
+            ago
+          </span>
+        )}
       </div>
-
     </div>
   );
 }

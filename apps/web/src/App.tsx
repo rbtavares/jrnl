@@ -11,11 +11,13 @@ function App() {
       <Sidebar />
 
       {/* Note editor */}
-      {selectedNote ?
+      {selectedNote ? (
         <NoteEditor />
-        :
-        <h1 className="font-light text-lg tracking-wide flex-1 flex items-center justify-center text-foreground-muted">select a note or create a new one to begin writing</h1>
-      }
+      ) : (
+        <h1 className="font-light text-lg tracking-wide flex-1 flex items-center justify-center text-foreground-muted">
+          select a note or create a new one to begin writing
+        </h1>
+      )}
     </div>
   );
 }

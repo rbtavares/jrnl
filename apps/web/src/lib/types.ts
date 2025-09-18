@@ -17,4 +17,3 @@ export const NoteSchema = z.object({
 });
 
 export type NoteSchemaType = z.infer<typeof NoteSchema>;
-

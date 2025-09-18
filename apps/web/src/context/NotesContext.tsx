@@ -10,7 +10,7 @@ type NotesAction =
   | { type: 'SET_NOTES'; payload: Note[] }
   | { type: 'ADD_NOTE'; payload: Note }
   | { type: 'UPDATE_NOTE'; payload: Partial<Pick<Note, 'title' | 'content'>> & { id: number } }
-  | { type: 'DELETE_NOTE'; payload: number }
+  | { type: 'DELETE_NOTE'; payload: number };
 
 // Context interface
 interface NotesContextType {
@@ -39,11 +39,9 @@ function notesReducer(state: Note[], action: NotesAction): Note[] {
     case 'ADD_NOTE':
       return state.concat(action.payload);
     case 'UPDATE_NOTE':
-      return state.map(note =>
-        note.id === action.payload.id ? { ...note, ...action.payload } : note
-      );
+      return state.map((note) => (note.id === action.payload.id ? { ...note, ...action.payload } : note));
     case 'DELETE_NOTE':
-      return state.filter(note => note.id !== action.payload);
+      return state.filter((note) => note.id !== action.payload);
     default:
       return state;
   }
@@ -58,7 +56,6 @@ interface NotesProviderProps {
 }
 
 export function NotesProvider({ children }: NotesProviderProps) {
-
   const [notes, dispatch] = useReducer(notesReducer, [] as Note[]);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
@@ -79,11 +76,15 @@ export function NotesProvider({ children }: NotesProviderProps) {
       const response = await axios.get('http://localhost:3000/entries');
 
       // Parse and validate the notes using Zod schema
-      const notesArray = z.array(NoteSchema).parse(response.data.entries.map((entry: any) => ({
-        ...entry,
-        createdAt: new Date(entry.createdAt),
-        updatedAt: new Date(entry.updatedAt)
-      })));
+      const notesArray = z
+        .array(NoteSchema)
+        .parse(
+          response.data.entries.map((entry: any) => ({
+            ...entry,
+            createdAt: new Date(entry.createdAt),
+            updatedAt: new Date(entry.updatedAt),
+          }))
+        );
 
       dispatch({ type: 'SET_NOTES', payload: notesArray });
     } catch (error) {
@@ -106,15 +107,12 @@ export function NotesProvider({ children }: NotesProviderProps) {
   const addNote = async (noteData?: Pick<Note, 'title' | 'content'>) => {
     try {
       setError(null);
-      const response = await axios.post('http://localhost:3000/entries', noteData || {
-        title: '',
-        content: '',
-      });
+      const response = await axios.post('http://localhost:3000/entries', noteData || { title: '', content: '' });
 
       const note = NoteSchema.parse({
         ...response.data.entry,
         createdAt: new Date(response.data.entry.createdAt),
-        updatedAt: new Date(response.data.entry.updatedAt)
+        updatedAt: new Date(response.data.entry.updatedAt),
       });
 
       dispatch({ type: 'ADD_NOTE', payload: note });
@@ -133,7 +131,6 @@ export function NotesProvider({ children }: NotesProviderProps) {
    * @param updates - The updates to apply to the note
    */
   const updateNote = async (id: number, updates: Partial<Pick<Note, 'title' | 'content'>>) => {
-
     try {
       setError(null);
       await axios.put(`http://localhost:3000/entries/${id}`, updates);
@@ -176,7 +173,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
    * @param id - The id of the note to select
    */
   const selectNote = async (id: number | null) => {
-    setSelectedNote(id ? notes.find(note => note.id === id) || null : null);
+    setSelectedNote(id ? notes.find((note) => note.id === id) || null : null);
   };
 
   const contextValue: NotesContextType = {
@@ -194,11 +191,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
     setNotes,
   };
 
-  return (
-    <NotesContext.Provider value={contextValue}>
-      {children}
-    </NotesContext.Provider>
-  );
+  return <NotesContext.Provider value={contextValue}>{children}</NotesContext.Provider>;
 }
 
 // Custom hook to use the notes context
