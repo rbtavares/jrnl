@@ -47,13 +47,13 @@ app.post('/entries', async (c) => {
   try {
     const validatedData = GenericEntrySchema.parse(requestData);
 
-    const entryInsertReturn = await db.insert(entriesTable).values(validatedData).returning({ id: entriesTable.id });
+    const entryInsertReturn = await db.insert(entriesTable).values(validatedData).returning();
     if (!entryInsertReturn[0]) {
       c.status(500);
       return c.json({ success: false, error: 'Failed to create entry' });
     } else {
       c.status(201);
-      return c.json({ success: true, message: 'Entry created successfully', entryId: entryInsertReturn[0].id });
+      return c.json({ success: true, message: 'Entry created successfully', entry: entryInsertReturn[0] });
     }
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
