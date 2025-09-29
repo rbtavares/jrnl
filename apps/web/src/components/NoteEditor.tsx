@@ -152,6 +152,8 @@ function NoteEditor() {
   }
 
   if (!selectedNote) return null;
+  
+  const updateDelta = (new Date().getTime() - (selectedNote.updatedAt.getTime() || 0)) / 1000;
 
   return (
     <div className="flex-1 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 relative flex flex-col">
@@ -184,9 +186,9 @@ function NoteEditor() {
           <span className="text-foreground-muted">
             Last edited{' '}
             {formatRelativeTime(
-              (new Date().getTime() - (selectedNote.updatedAt.getTime() || 0)) / 1000
+              updateDelta
             )}{' '}
-            ago
+            {updateDelta >= 60 && 'ago'}
           </span>
         )}
       </div>
