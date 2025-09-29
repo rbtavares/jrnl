@@ -39,7 +39,9 @@ function notesReducer(state: Note[], action: NotesAction): Note[] {
     case 'ADD_NOTE':
       return state.concat(action.payload);
     case 'UPDATE_NOTE':
-      return state.map((note) => (note.id === action.payload.id ? { ...note, ...action.payload } : note));
+      return state.map((note) =>
+        note.id === action.payload.id ? { ...note, ...action.payload } : note
+      );
     case 'DELETE_NOTE':
       return state.filter((note) => note.id !== action.payload);
     default:
@@ -107,7 +109,10 @@ export function NotesProvider({ children }: NotesProviderProps) {
   const addNote = async (noteData?: Pick<Note, 'title' | 'content'>) => {
     try {
       setError(null);
-      const response = await axios.post('http://localhost:3000/entries', noteData || { title: '', content: '' });
+      const response = await axios.post(
+        'http://localhost:3000/entries',
+        noteData || { title: '', content: '' }
+      );
 
       const note = NoteSchema.parse({
         ...response.data.entry,
@@ -153,6 +158,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
       setError(null);
       await axios.delete(`http://localhost:3000/entries/${id}`);
       dispatch({ type: 'DELETE_NOTE', payload: id });
+      setSelectedNote(null);
     } catch (error) {
       setError('Failed to delete note');
       console.error('Delete note error:', error);

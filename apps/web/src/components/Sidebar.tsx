@@ -15,12 +15,26 @@ function NoteCard({ note, onClick }: NoteCardProps) {
       onClick={() => onClick(note)}
     >
       <div className="flex justify-between items-end">
-        <h1 className={cn("text-xl font-medium text-foreground-primary", note.title ? '' : 'opacity-40')}>{note.title || 'Untitled Note'}</h1>
+        <h1
+          className={cn(
+            'text-xl font-medium text-foreground-primary',
+            note.title ? '' : 'opacity-40'
+          )}
+        >
+          {note.title || 'Untitled Note'}
+        </h1>
         <span className="text-xs text-foreground-muted font-light tracking-wide mb-1">
           {formatRelativeTime((new Date().getTime() - note.updatedAt.getTime()) / 1000)}
         </span>
       </div>
-      <p className={cn("text-sm/tight mb-0.5 line-clamp-2 text-foreground-secondary", note.content ? '' : 'opacity-35 italic')}>{note.content || 'No content yet...'}</p>
+      <p
+        className={cn(
+          'text-sm/tight mb-0.5 line-clamp-2 text-foreground-secondary',
+          note.content ? '' : 'opacity-35 italic'
+        )}
+      >
+        {note.content || 'No content yet...'}
+      </p>
     </div>
   );
 }

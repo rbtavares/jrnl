@@ -1,4 +1,4 @@
-import { CheckCircleIcon, CircleNotchIcon, FloppyDiskIcon, TrashIcon } from '@phosphor-icons/react';
+import { CheckCircleIcon, CircleNotchIcon, TrashIcon } from '@phosphor-icons/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNotes } from '../context/NotesContext';
 import { formatRelativeTime } from '../lib/utils';
@@ -31,7 +31,7 @@ function StatusIndicator({ status }: { status: NoteEditorStatus }) {
 // Note Editor
 
 function NoteEditor() {
-  const { selectedNote, updateNote } = useNotes();
+  const { selectedNote, updateNote, deleteNote } = useNotes();
 
   const [title, setTitle] = useState(selectedNote?.title || '');
   const [content, setContent] = useState(selectedNote?.content || '');
@@ -59,9 +59,13 @@ function NoteEditor() {
         const currentSelectedNote = selectedNoteRef.current;
         if (
           currentSelectedNote &&
-          (currentTitle !== currentSelectedNote.title || currentContent !== currentSelectedNote.content)
+          (currentTitle !== currentSelectedNote.title ||
+            currentContent !== currentSelectedNote.content)
         ) {
-          updateNoteRef.current(currentSelectedNote.id, { title: currentTitle, content: currentContent });
+          updateNoteRef.current(currentSelectedNote.id, {
+            title: currentTitle,
+            content: currentContent,
+          });
         }
       }
     };
@@ -99,7 +103,10 @@ function NoteEditor() {
 
     // Simulate async save operation
     setTimeout(() => {
-      updateNoteRef.current(currentSelectedNote.id, { title: currentTitle, content: currentContent });
+      updateNoteRef.current(currentSelectedNote.id, {
+        title: currentTitle,
+        content: currentContent,
+      });
 
       setStatus(NoteEditorStatus.Saved);
 
@@ -128,6 +135,12 @@ function NoteEditor() {
     };
   }, []);
 
+  function handleDeleteNote() {
+    if (!selectedNote) return;
+
+    deleteNote(selectedNote.id);
+  }
+
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setTitle(e.target.value);
     debouncedSave();
@@ -154,7 +167,10 @@ function NoteEditor() {
       />
 
       {/* Editor actions */}
-      <button className="hover:scale-110 active:scale-95 absolute bottom-3 right-3 aspect-square p-1.5 flex items-center justify-center cursor-pointer text-red-500/50 hover:text-red-500/100 transition-all duration-300">
+      <button
+        className="hover:scale-110 active:scale-95 absolute bottom-3 right-3 aspect-square p-1.5 flex items-center justify-center cursor-pointer text-red-500/50 hover:text-red-500/100 transition-all duration-300"
+        onClick={handleDeleteNote}
+      >
         <TrashIcon weight="bold" className="transition-all duration-300" />
       </button>
 
@@ -164,7 +180,10 @@ function NoteEditor() {
           <StatusIndicator status={status} />
         ) : (
           <span className="text-foreground-muted">
-            Last edited {formatRelativeTime((new Date().getTime() - (selectedNote?.updatedAt.getTime() || 0)) / 1000)}{' '}
+            Last edited{' '}
+            {formatRelativeTime(
+              (new Date().getTime() - (selectedNote?.updatedAt.getTime() || 0)) / 1000
+            )}{' '}
             ago
           </span>
         )}

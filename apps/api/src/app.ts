@@ -53,7 +53,11 @@ app.post('/entries', async (c) => {
       return c.json({ success: false, error: 'Failed to create entry' });
     } else {
       c.status(201);
-      return c.json({ success: true, message: 'Entry created successfully', entry: entryInsertReturn[0] });
+      return c.json({
+        success: true,
+        message: 'Entry created successfully',
+        entry: entryInsertReturn[0],
+      });
     }
   } catch (error) {
     if (error instanceof Error && error.name === 'ZodError') {
@@ -92,7 +96,7 @@ app.put('/entries/:id', async (c) => {
 app.delete('/entries/:id', async (c) => {
   const { id } = c.req.param();
   await db.delete(entriesTable).where(eq(entriesTable.id, Number(id)));
-  c.status(204);
+  c.status(200);
   return c.json({ success: true, message: 'Entry deleted successfully' });
 });
 

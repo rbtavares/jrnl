@@ -29,7 +29,10 @@ export default tseslint.config([
       // Other configs...
     ],
     languageOptions: {
-      parserOptions: { project: ['./tsconfig.node.json', './tsconfig.app.json'], tsconfigRootDir: import.meta.dirname },
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
       // other options...
     },
   },
@@ -55,7 +58,10 @@ export default tseslint.config([
       reactDom.configs.recommended,
     ],
     languageOptions: {
-      parserOptions: { project: ['./tsconfig.node.json', './tsconfig.app.json'], tsconfigRootDir: import.meta.dirname },
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
       // other options...
     },
   },

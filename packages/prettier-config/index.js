@@ -1,5 +1,5 @@
 export default {
-  printWidth: 120, // line max length
+  printWidth: 100, // line max length
   tabWidth: 2, // tab size
   useTabs: false, // use tabs instead of spaces
   semi: true, // semicolon at the end of the line
