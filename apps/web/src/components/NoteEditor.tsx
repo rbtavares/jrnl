@@ -151,6 +151,8 @@ function NoteEditor() {
     debouncedSave();
   }
 
+  if (!selectedNote) return null;
+
   return (
     <div className="flex-1 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 relative flex flex-col">
       <input
@@ -182,7 +184,7 @@ function NoteEditor() {
           <span className="text-foreground-muted">
             Last edited{' '}
             {formatRelativeTime(
-              (new Date().getTime() - (selectedNote?.updatedAt.getTime() || 0)) / 1000
+              (new Date().getTime() - (selectedNote.updatedAt.getTime() || 0)) / 1000
             )}{' '}
             ago
           </span>

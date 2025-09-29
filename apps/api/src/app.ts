@@ -47,7 +47,12 @@ app.post('/entries', async (c) => {
   try {
     const validatedData = GenericEntrySchema.parse(requestData);
 
-    const entryInsertReturn = await db.insert(entriesTable).values(validatedData).returning();
+    const now = new Date().toISOString();
+    const entryInsertReturn = await db.insert(entriesTable).values({
+      ...validatedData,
+      createdAt: now,
+      updatedAt: now
+    }).returning();
     if (!entryInsertReturn[0]) {
       c.status(500);
       return c.json({ success: false, error: 'Failed to create entry' });
@@ -78,7 +83,10 @@ app.put('/entries/:id', async (c) => {
 
     const entry = await db
       .update(entriesTable)
-      .set(validatedData)
+      .set({
+        ...validatedData,
+        updatedAt: new Date().toISOString()
+      })
       .where(eq(entriesTable.id, Number(id)));
     c.status(200);
     return c.json({ success: true, entry });

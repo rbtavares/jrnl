@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "b5d1d350-e387-4855-be71-815c2f11aedf",
+  "id": "20d4811a-e46f-4a42-bcae-cd8d8160f93a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "entries": {
@@ -33,16 +33,14 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(datetime('now'))"
+          "autoincrement": false
         },
         "updated_at": {
           "name": "updated_at",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(datetime('now'))"
+          "autoincrement": false
         }
       },
       "indexes": {},

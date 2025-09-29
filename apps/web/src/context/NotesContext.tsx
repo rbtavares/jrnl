@@ -40,7 +40,7 @@ function notesReducer(state: Note[], action: NotesAction): Note[] {
       return state.concat(action.payload);
     case 'UPDATE_NOTE':
       return state.map((note) =>
-        note.id === action.payload.id ? { ...note, ...action.payload } : note
+        note.id === action.payload.id ? { ...note, ...action.payload, updatedAt: new Date() } : note
       );
     case 'DELETE_NOTE':
       return state.filter((note) => note.id !== action.payload);
@@ -60,6 +60,16 @@ interface NotesProviderProps {
 export function NotesProvider({ children }: NotesProviderProps) {
   const [notes, dispatch] = useReducer(notesReducer, [] as Note[]);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+
+  // Update selectedNote when the corresponding note in notes array changes
+  useEffect(() => {
+    if (selectedNote) {
+      const updatedSelectedNote = notes.find(note => note.id === selectedNote.id);
+      if (updatedSelectedNote && updatedSelectedNote !== selectedNote) {
+        setSelectedNote(updatedSelectedNote);
+      }
+    }
+  }, [notes, selectedNote]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
