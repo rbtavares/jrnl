@@ -7,7 +7,7 @@ export default function Dialog({ onCancel, onDelete }: DialogProps) {
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/50" />
-      <div className="z-10 bg-card shadow-card rounded-xl border border-card-border p-4 space-y-5">
+      <div className="z-10 bg-card shadow-card rounded-xl border border-card-border p-5 space-y-5">
         {/* Dialog content */}
         <div className="space-y-1">
           <h1 className="text-2xl font-medium">Are you sure?</h1>
