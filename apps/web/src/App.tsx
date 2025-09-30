@@ -12,9 +12,8 @@ function App() {
 
   // Check if this is the user's first time opening the app
   useEffect(() => {
-    // const hasVisited = localStorage.getItem('jrnl-has-visited');
-    // setIsFirstTime(!hasVisited);
-    setIsFirstTime(true);
+    const hasVisited = localStorage.getItem('jrnl-has-visited');
+    setIsFirstTime(!hasVisited);
   }, []);
 
   // Handle when user clicks "Get Started" on welcome screen
@@ -32,7 +31,6 @@ function App() {
   if (isFirstTime === null) {
     return (
       <div className="w-full max-w-screen-2xl flex min-h-screen p-6 items-center justify-center">
-        <div className="text-foreground-muted">Loading...</div>
       </div>
     );
   }
