@@ -64,7 +64,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
   // Update selectedNote when the corresponding note in notes array changes
   useEffect(() => {
     if (selectedNote) {
-      const updatedSelectedNote = notes.find(note => note.id === selectedNote.id);
+      const updatedSelectedNote = notes.find((note) => note.id === selectedNote.id);
       if (updatedSelectedNote && updatedSelectedNote !== selectedNote) {
         setSelectedNote(updatedSelectedNote);
       }

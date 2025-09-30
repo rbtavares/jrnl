@@ -2,6 +2,7 @@ import { CheckCircleIcon, CircleNotchIcon, TrashIcon } from '@phosphor-icons/rea
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNotes } from '../context/NotesContext';
 import { formatRelativeTime } from '../lib/utils';
+import Dialog from './Dialog';
 
 // Editor Status
 
@@ -32,10 +33,9 @@ function StatusIndicator({ status }: { status: NoteEditorStatus }) {
 
 function NoteEditor() {
   const { selectedNote, updateNote, deleteNote } = useNotes();
-
   const [title, setTitle] = useState(selectedNote?.title || '');
   const [content, setContent] = useState(selectedNote?.content || '');
-
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [status, setStatus] = useState<NoteEditorStatus | null>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const currentValuesRef = useRef({ title: '', content: '' });
@@ -99,8 +99,6 @@ function NoteEditor() {
     // Get the most current values from the ref
     const { title: currentTitle, content: currentContent } = currentValuesRef.current;
 
-    console.log('Saving with values:', { currentTitle, currentContent });
-
     // Simulate async save operation
     setTimeout(() => {
       updateNoteRef.current(currentSelectedNote.id, {
@@ -139,6 +137,7 @@ function NoteEditor() {
     if (!selectedNote) return;
 
     deleteNote(selectedNote.id);
+    setIsDeleteDialogOpen(false);
   }
 
   function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -152,47 +151,48 @@ function NoteEditor() {
   }
 
   if (!selectedNote) return null;
-  
+
   const updateDelta = (new Date().getTime() - (selectedNote.updatedAt.getTime() || 0)) / 1000;
 
   return (
-    <div className="flex-1 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 relative flex flex-col">
-      <input
-        className="text-4xl font-semibold focus:outline-none"
-        value={title}
-        onChange={handleTitleChange}
-        placeholder="Your note title..."
-      />
-      <textarea
-        className="text-base/snug text-foreground-secondary focus:outline-none flex-1 resize-none"
-        value={content}
-        onChange={handleContentChange}
-        placeholder="A long note about your day..."
-      />
+    <>
+      {isDeleteDialogOpen && (
+        <Dialog onCancel={() => setIsDeleteDialogOpen(false)} onDelete={handleDeleteNote} />
+      )}
+      <div className="flex-1 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 relative flex flex-col">
+        <input
+          className="text-4xl font-semibold focus:outline-none"
+          value={title}
+          onChange={handleTitleChange}
+          placeholder="Your note title..."
+        />
+        <textarea
+          className="text-base/snug text-foreground-secondary focus:outline-none flex-1 resize-none"
+          value={content}
+          onChange={handleContentChange}
+          placeholder="A long note about your day..."
+        />
 
-      {/* Editor actions */}
-      <button
-        className="hover:scale-110 active:scale-95 absolute bottom-3 right-3 aspect-square p-1.5 flex items-center justify-center cursor-pointer text-red-500/50 hover:text-red-500/100 transition-all duration-300"
-        onClick={handleDeleteNote}
-      >
-        <TrashIcon weight="bold" className="transition-all duration-300" />
-      </button>
+        {/* Editor actions */}
+        <button
+          className="hover:scale-110 active:scale-95 absolute bottom-3 right-3 aspect-square p-1.5 flex items-center justify-center cursor-pointer text-red-500/50 hover:text-red-500/100 transition-all duration-300"
+          onClick={() => setIsDeleteDialogOpen(true)}
+        >
+          <TrashIcon weight="bold" className="transition-all duration-300" />
+        </button>
 
-      {/* Status indicator / last edited at */}
-      <div className="absolute bottom-3 left-4 text-xs">
-        {status ? (
-          <StatusIndicator status={status} />
-        ) : (
-          <span className="text-foreground-muted">
-            Last edited{' '}
-            {formatRelativeTime(
-              updateDelta
-            )}{' '}
-            {updateDelta >= 60 && 'ago'}
-          </span>
-        )}
+        {/* Status indicator / last edited at */}
+        <div className="absolute bottom-3 left-4 text-xs">
+          {status ? (
+            <StatusIndicator status={status} />
+          ) : (
+            <span className="text-foreground-muted">
+              Last edited {formatRelativeTime(updateDelta)} {updateDelta >= 60 && 'ago'}
+            </span>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

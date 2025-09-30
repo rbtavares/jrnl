@@ -1,4 +1,5 @@
 import NoteEditor from './components/NoteEditor';
+import Dialog from './components/Dialog';
 import Sidebar from './components/Sidebar';
 import { useNotes } from './context/NotesContext';
 

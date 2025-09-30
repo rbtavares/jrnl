@@ -17,10 +17,13 @@
   --color-foreground-primary: #121212;
   --color-foreground-secondary: #4a4a4a;
   --color-foreground-muted: #aaaaaa;
+  --color-foreground-destructive: #FAFAFA;
 
   /* Card */
   --color-card: #FFFFFF;
   --color-card-border: #F0F0F0;
+  --color-destructive: #FF4444;
+  --color-outline: #353535;
   --shadow-card: 0px 0px 3px rgba(0, 0, 0, 0.01),
     0px 0px 11px rgba(0, 0, 0, 0.02),
     0px 0px 25px rgba(0, 0, 0, 0.03);
