@@ -16,7 +16,7 @@ function WelcomeScreen({ onGetStarted, isTransitioning = false }: WelcomeScreenP
   // Measure all word widths on mount
   useEffect(() => {
     if (measureRef.current) {
-      const widths = words.map(word => {
+      const widths = words.map((word) => {
         measureRef.current!.textContent = word;
         return measureRef.current!.offsetWidth + 5;
       });
@@ -33,6 +33,12 @@ function WelcomeScreen({ onGetStarted, isTransitioning = false }: WelcomeScreenP
   }, [words.length]);
 
   return (
+    <motion.div
+      key="welcome"
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
+      transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+    >
       <div className="w-full max-w-screen-2xl flex min-h-screen p-6 items-center justify-center bg-background mx-auto">
         <div className="flex flex-col items-center select-none gap-20">
           <div className="flex flex-col items-center">
@@ -67,48 +73,40 @@ function WelcomeScreen({ onGetStarted, isTransitioning = false }: WelcomeScreenP
                 </motion.span>
               ))}
               <br />
-               <motion.span
+              <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 2.25 }}
-               >
-                 where you can{' '}
-                 <motion.span
-                   className="inline-block relative"
-                   style={{ height: '1.2em', minHeight: '1.2em' }}
-                   animate={{ 
-                     width: wordWidths[currentWordIndex] || 'auto'
-                   }}
-                   transition={{ 
-                     duration: 0.6,
-                     ease: [0.4, 0, 0.2, 1]
-                   }}
-                 >
-                   <AnimatePresence mode="wait">
-                     <motion.span
-                       key={currentWordIndex}
-                       className="font-borel absolute left-0 top-0 whitespace-nowrap"
-                     >
-                       {words[currentWordIndex].split('').map((letter, letterIndex) => (
-                         <motion.span
-                           key={`${currentWordIndex}-${letterIndex}`}
-                           initial={{ opacity: 0, filter: 'blur(5px)' }}
-                           animate={{ opacity: 1, filter: 'blur(0px)' }}
-                           exit={{ opacity: 0, filter: 'blur(5px)' }}
-                           transition={{ 
-                             duration: 0.5, 
-                             delay: letterIndex * 0.05 
-                           }}
-                           className="inline-block"
-                         >
-                           {letter}
-                         </motion.span>
-                       ))}
-                     </motion.span>
-                   </AnimatePresence>
-                 </motion.span>{' '}
-                 notes.
-               </motion.span>
+              >
+                where you can{' '}
+                <motion.span
+                  className="inline-block relative"
+                  style={{ height: '1.2em', minHeight: '1.2em' }}
+                  animate={{ width: wordWidths[currentWordIndex] || 'auto' }}
+                  transition={{ duration: 0.6, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={currentWordIndex}
+                      className="font-borel absolute left-0 top-0 whitespace-nowrap"
+                    >
+                      {words[currentWordIndex].split('').map((letter, letterIndex) => (
+                        <motion.span
+                          key={`${currentWordIndex}-${letterIndex}`}
+                          initial={{ opacity: 0, filter: 'blur(5px)' }}
+                          animate={{ opacity: 1, filter: 'blur(0px)' }}
+                          exit={{ opacity: 0, filter: 'blur(5px)' }}
+                          transition={{ duration: 0.5, delay: letterIndex * 0.05 }}
+                          className="inline-block"
+                        >
+                          {letter}
+                        </motion.span>
+                      ))}
+                    </motion.span>
+                  </AnimatePresence>
+                </motion.span>{' '}
+                notes.
+              </motion.span>
             </p>
           </div>
 
@@ -119,20 +117,16 @@ function WelcomeScreen({ onGetStarted, isTransitioning = false }: WelcomeScreenP
             onClick={onGetStarted}
             disabled={isTransitioning}
             className={`text-lg text-background flex items-center gap-2 px-4 py-2.5 rounded-lg font-light transition-all duration-300 ${
-              isTransitioning 
-                ? 'bg-black/50 cursor-not-allowed' 
+              isTransitioning
+                ? 'bg-black/50 cursor-not-allowed'
                 : 'cursor-pointer hover:scale-110 active:scale-95 bg-black/75 hover:bg-black/90'
             }`}
           >
-            {isTransitioning ? 'Loading...' : 'Start writing'} 
+            {isTransitioning ? 'Loading...' : 'Start writing'}
             {!isTransitioning && (
               <motion.div
                 animate={{ x: [0, 4, 0] }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                 className="inline-block"
               >
                 <ArrowRightIcon className="size-5.5" weight="regular" />
@@ -141,10 +135,8 @@ function WelcomeScreen({ onGetStarted, isTransitioning = false }: WelcomeScreenP
           </motion.button>
         </div>
 
-        <div className="absolute bottom-6">
-          {/* <p>Built with love</p> */}
-        </div>
-        
+        <div className="absolute bottom-6">{/* <p>Built with love</p> */}</div>
+
         {/* Hidden span for measuring word widths */}
         <span
           ref={measureRef}
@@ -152,6 +144,7 @@ function WelcomeScreen({ onGetStarted, isTransitioning = false }: WelcomeScreenP
           aria-hidden="true"
         />
       </div>
+    </motion.div>
   );
 }
 

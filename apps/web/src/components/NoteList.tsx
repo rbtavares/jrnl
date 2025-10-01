@@ -17,17 +17,11 @@ export default function NoteList() {
 
   return (
     <div className="w-1/5 min-w-64 max-w-84 flex flex-col gap-4">
-
       {/* New Note Button */}
       <motion.button
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ 
-          type: "spring",
-          stiffness: 400,
-          damping: 25,
-          delay: 0.5
-        }}
+        transition={{ type: 'spring', stiffness: 400, damping: 25, delay: 0.5 }}
         className="bg-card shadow-card rounded-xl border border-card-border flex items-center gap-1.5 self-start p-2 px-3 cursor-pointer"
         onClick={() => addNote()}
       >
@@ -40,15 +34,10 @@ export default function NoteList() {
           <motion.div
             key={note.id}
             layout
-            transition={{
-              layout: {
-                duration: 0.3,
-                ease: "easeInOut"
-              }
-            }}
+            transition={{ layout: { duration: 0.3, ease: 'easeInOut' } }}
           >
-            <NoteItem 
-              note={note} 
+            <NoteItem
+              note={note}
               onClick={() => {
                 // If this note is already selected, unselect it; otherwise select it
                 if (selectedNote?.id === note.id) {
@@ -56,7 +45,7 @@ export default function NoteList() {
                 } else {
                   selectNote(note.id);
                 }
-              }} 
+              }}
               isSelected={selectedNote ? selectedNote?.id === note.id : true}
               animationDelay={!hasAnimatedInitialLoad.current ? 0.6 + index * 0.1 : 0}
             />
