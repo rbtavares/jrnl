@@ -35,15 +35,32 @@ export default function NoteList() {
       </motion.button>
 
       {/* Note List */}
-      <AnimatePresence>
+      <AnimatePresence mode="popLayout">
         {notes.map((note, index) => (
-          <NoteItem 
-            key={note.id} 
-            note={note} 
-            onClick={() => selectNote(note.id)} 
-            isSelected={selectedNote ? selectedNote?.id === note.id : true}
-            animationDelay={!hasAnimatedInitialLoad.current ? 1 + index * 0.1 : 0}
-          />
+          <motion.div
+            key={note.id}
+            layout
+            transition={{
+              layout: {
+                duration: 0.3,
+                ease: "easeInOut"
+              }
+            }}
+          >
+            <NoteItem 
+              note={note} 
+              onClick={() => {
+                // If this note is already selected, unselect it; otherwise select it
+                if (selectedNote?.id === note.id) {
+                  selectNote(null);
+                } else {
+                  selectNote(note.id);
+                }
+              }} 
+              isSelected={selectedNote ? selectedNote?.id === note.id : true}
+              animationDelay={!hasAnimatedInitialLoad.current ? 0.6 + index * 0.1 : 0}
+            />
+          </motion.div>
         ))}
       </AnimatePresence>
     </div>

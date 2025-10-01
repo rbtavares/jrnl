@@ -6,7 +6,7 @@ import WelcomeScreen from './components/WelcomeScreen';
 import { useNotes } from './context/NotesContext';
 
 function App() {
-  const { selectedNote } = useNotes();
+  const { selectedNote, notes, isLoading } = useNotes();
   const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -41,12 +41,12 @@ function App() {
         <motion.div
           key="welcome"
           initial={{ opacity: 1 }}
-          exit={{ 
+          exit={{
             opacity: 0,
             scale: 0.95,
             filter: 'blur(10px)'
           }}
-          transition={{ 
+          transition={{
             duration: 0.8,
             ease: [0.4, 0, 0.2, 1]
           }}
@@ -56,17 +56,17 @@ function App() {
       ) : (
         <motion.div
           key="app"
-          initial={{ 
+          initial={{
             opacity: 0,
             scale: 0.98,
             filter: 'blur(10px)'
           }}
-          animate={{ 
+          animate={{
             opacity: 1,
             scale: 1,
             filter: 'blur(0px)'
           }}
-          transition={{ 
+          transition={{
             duration: 0.8,
             ease: [0.4, 0, 0.2, 1]
           }}
@@ -79,10 +79,29 @@ function App() {
           {selectedNote ? (
             <NoteEditor />
           ) : (
-            <h1 className="font-light text-lg tracking-wide flex-1 flex items-center justify-center text-foreground-muted">
-              select a note or create a new one to begin writing
-            </h1>
+            notes.length > 0 ? (
+              <h1 className="font-light text-lg tracking-wide flex-1 flex items-center justify-center text-foreground-muted">
+                select a note or create a new one to begin writing
+              </h1>
+            ) : null
           )}
+
+
+          <AnimatePresence mode="wait">
+            {!isLoading && notes.length === 0 && (
+              <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+                <motion.h1
+                  initial={{ opacity: 0, filter: 'blur(15px)' }}
+                  animate={{ opacity: 1, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="font-light text-lg tracking-wide text-foreground-muted"
+                >
+                  create a note to begin <span className="font-borel">your</span> writing journey
+                </motion.h1>
+              </div>
+            )}
+          </AnimatePresence>
+
         </motion.div>
       )}
     </AnimatePresence>

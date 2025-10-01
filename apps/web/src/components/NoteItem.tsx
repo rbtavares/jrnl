@@ -12,14 +12,22 @@ interface NoteItemProps {
 export default function NoteItem({ note, onClick, isSelected = false, animationDelay = 0 }: NoteItemProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: isSelected ? 1 : 0.5, y: 0 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0, scale: 0, y: 20 }}
+      animate={{ opacity: isSelected ? 1 : 0.5, scale: 1, y: 0 }}
+      exit={{ 
+        opacity: 0, 
+        scale: 0.8, 
+        height: 0,
+        marginBottom: 0,
+        paddingTop: 0,
+        paddingBottom: 0
+      }}
       transition={{ 
-        duration: 0.25,
+        duration: 0.3,
         delay: animationDelay,
         ease: "easeOut"
       }}
+      style={{ overflow: 'hidden' }}
       className={cn("bg-card shadow-card rounded-xl border border-card-border p-2.5 px-3.5 space-y-2 cursor-pointer")}
       onClick={() => onClick(note)}
     >
@@ -30,7 +38,7 @@ export default function NoteItem({ note, onClick, isSelected = false, animationD
             initial={{ opacity: 0 }}
             animate={{ opacity: note.title ? 1 : 0.5 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25, ease: "linear" }}
             className={cn(
               'text-xl font-medium text-foreground-primary truncate min-w-0 flex-1'
             )}
@@ -48,7 +56,7 @@ export default function NoteItem({ note, onClick, isSelected = false, animationD
           initial={{ opacity: 0 }}
           animate={{ opacity: note.content ? 1 : 0.5 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.25, ease: "linear" }}
           className={cn(
             'text-sm/tight mb-0.5 line-clamp-2 text-foreground-secondary',
             note.content ? '' : 'italic'
