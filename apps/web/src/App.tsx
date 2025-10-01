@@ -5,7 +5,6 @@ import WelcomeScreen from './screens/WelcomeScreen';
 
 export default function App() {
   const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Check if this is the user's first time opening the app
   useEffect(() => {
@@ -15,12 +14,10 @@ export default function App() {
 
   // Handle when user clicks "Get Started" on welcome screen
   const handleGetStarted = () => {
-    setIsTransitioning(true);
     setTimeout(() => {
       localStorage.setItem('jrnl-has-visited', 'true');
       setIsFirstTime(false);
-      setIsTransitioning(false);
-    }, 800);
+    }, 800); // Increased to 1000ms to allow exit animation to complete
   };
 
   // Show nothing while checking localStorage
@@ -29,9 +26,9 @@ export default function App() {
   return (
     <AnimatePresence mode="wait">
       {isFirstTime ? (
-        <WelcomeScreen onGetStarted={handleGetStarted} isTransitioning={isTransitioning} />
+        <WelcomeScreen key="welcome" onGetStarted={handleGetStarted} />
       ) : (
-        <EditorScreen />
+        <EditorScreen key="editor" />
       )}
     </AnimatePresence>
   );
