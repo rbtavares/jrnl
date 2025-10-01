@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import NoteEditor from './components/NoteEditor';
-import Sidebar from './components/Sidebar';
+import NoteList from './components/NoteList';
 import WelcomeScreen from './components/WelcomeScreen';
 import { useNotes } from './context/NotesContext';
 
@@ -73,7 +73,7 @@ function App() {
           className="w-full max-w-screen-2xl flex min-h-screen p-6 gap-6 mx-auto"
         >
           {/* Sidebar */}
-          <Sidebar />
+          <NoteList />
 
           {/* Note editor */}
           {selectedNote ? (

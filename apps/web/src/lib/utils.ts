@@ -15,7 +15,7 @@ export function formatRelativeTime(seconds: number): string {
 
   // Less than 60 seconds: show as "Xs"
   if (absSeconds < 60) {
-    return `just now`;
+    return `now`;
   }
 
   // Less than 1 hour (3600 seconds): show as "Xm"
