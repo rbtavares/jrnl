@@ -14,15 +14,21 @@ function SwappingWords({ words, interval = 3000, className = '' }: SwappingWords
 
   // Measure all word widths on mount
   useEffect(() => {
-    if (measureRef.current) {
-      const widths = words.map((word) => {
-        measureRef.current!.textContent = word;
-        // Use getBoundingClientRect for more precise measurement
-        const rect = measureRef.current!.getBoundingClientRect();
-        return Math.ceil(rect.width) + 2; // Small buffer for spacing
-      });
-      setWordWidths(widths);
-    }
+    const measureWidths = () => {
+      if (measureRef.current) {
+        const widths = words.map((word) => {
+          measureRef.current!.textContent = word;
+          // Use getBoundingClientRect for more precise measurement
+          const rect = measureRef.current!.getBoundingClientRect();
+          return Math.ceil(rect.width) + 3; // Increased buffer for spacing
+        });
+        setWordWidths(widths);
+      }
+    };
+
+    // Small delay to ensure fonts are loaded
+    const timer = setTimeout(measureWidths, 100);
+    return () => clearTimeout(timer);
   }, [words]);
 
   useEffect(() => {
@@ -44,7 +50,7 @@ function SwappingWords({ words, interval = 3000, className = '' }: SwappingWords
         <AnimatePresence mode="wait">
           <motion.span
             key={currentWordIndex}
-            className="font-borel absolute left-0 top-0 whitespace-nowrap"
+            className="font-borel absolute left-0 top-0 whitespace-nowrap text-2xl"
           >
             {words[currentWordIndex].split('').map((letter, letterIndex) => (
               <motion.span
@@ -65,7 +71,7 @@ function SwappingWords({ words, interval = 3000, className = '' }: SwappingWords
       {/* Hidden span for measuring word widths */}
       <span
         ref={measureRef}
-        className={`font-borel absolute invisible pointer-events-none ${className}`}
+        className="font-borel absolute invisible pointer-events-none text-2xl"
         aria-hidden="true"
       />
     </>

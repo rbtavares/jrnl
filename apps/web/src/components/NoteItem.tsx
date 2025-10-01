@@ -17,8 +17,8 @@ export default function NoteItem({
 }: NoteItemProps) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0, y: 20 }}
-      animate={{ opacity: isSelected ? 1 : 0.5, scale: 1, y: 0 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: isSelected ? 1 : 0.5, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, height: 0, marginBottom: 0, paddingTop: 0, paddingBottom: 0 }}
       transition={{ duration: 0.3, delay: animationDelay, ease: 'easeOut' }}
       style={{ overflow: 'hidden' }}

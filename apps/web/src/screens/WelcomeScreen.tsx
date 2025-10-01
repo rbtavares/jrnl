@@ -63,7 +63,7 @@ function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 2.25 }}
               >
-                where you can <SwappingWords words={words} className="text-2xl font-light" /> notes.
+                where you can <SwappingWords words={words} /> notes.
               </motion.span>
             </p>
           </div>
@@ -81,7 +81,7 @@ function WelcomeScreen({ onGetStarted }: WelcomeScreenProps) {
               `text-lg text-background flex items-center gap-2 px-4 py-2.5 rounded-lg font-light transition-all duration-300`,
               hasClicked
                 ? 'bg-black/50 cursor-default'
-                : 'cursor-pointer hover:scale-110 active:scale-95 bg-black/75 hover:bg-black/90'
+                : 'cursor-pointer hover:scale-110 active:scale-95 bg-black/80 hover:bg-black/90'
             )}
           >
             {hasClicked ? 'Loading...' : 'Start writing'}
