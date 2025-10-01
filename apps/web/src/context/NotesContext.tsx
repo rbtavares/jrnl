@@ -71,7 +71,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
     }
   }, [notes, selectedNote]);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {

@@ -5,16 +5,22 @@ import { AnimatePresence, motion } from "motion/react";
 interface NoteItemProps {
   note: Note;
   onClick: (note: Note) => void;
+  isSelected: boolean;
+  animationDelay?: number;
 }
 
-export default function NoteItem({ note, onClick }: NoteItemProps) {
+export default function NoteItem({ note, onClick, isSelected = false, animationDelay = 0 }: NoteItemProps) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: isSelected ? 1 : 0.5, y: 0 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-card shadow-card rounded-xl border border-card-border p-2.5 px-3.5 space-y-2 cursor-pointer"
+      transition={{ 
+        duration: 0.25,
+        delay: animationDelay,
+        ease: "easeOut"
+      }}
+      className={cn("bg-card shadow-card rounded-xl border border-card-border p-2.5 px-3.5 space-y-2 cursor-pointer")}
       onClick={() => onClick(note)}
     >
       <div className="flex justify-between items-end gap-2">
