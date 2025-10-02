@@ -4,10 +4,8 @@ import { useNotes } from '../context/NotesContext';
 import { formatRelativeTime } from '../lib/utils';
 import Dialog from './Dialog';
 
-// Editor Status
-
+// Note Editor Status
 const NoteEditorStatus = { Saving: 'saving', Saved: 'saved' } as const;
-
 type NoteEditorStatus = (typeof NoteEditorStatus)[keyof typeof NoteEditorStatus];
 
 function StatusIndicator({ status }: { status: NoteEditorStatus }) {
@@ -21,8 +19,8 @@ function StatusIndicator({ status }: { status: NoteEditorStatus }) {
       )}
       {status === NoteEditorStatus.Saved && (
         <>
-          <CheckCircleIcon className="size-3.5 text-green-500" weight="bold" />
-          <span className="text-green-500">Saved</span>
+          <CheckCircleIcon className="size-3.5 text-green-600" weight="bold" />
+          <span className="text-green-600">Saved</span>
         </>
       )}
     </div>
@@ -30,8 +28,7 @@ function StatusIndicator({ status }: { status: NoteEditorStatus }) {
 }
 
 // Note Editor
-
-function NoteEditor() {
+export default function NoteEditor() {
   const { selectedNote, updateNote, deleteNote } = useNotes();
   const [title, setTitle] = useState(selectedNote?.title || '');
   const [content, setContent] = useState(selectedNote?.content || '');
@@ -195,5 +192,3 @@ function NoteEditor() {
     </>
   );
 }
-
-export default NoteEditor;
