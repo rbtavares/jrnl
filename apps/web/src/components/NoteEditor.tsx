@@ -42,24 +42,107 @@ export default function NoteEditor() {
   const selectedNoteRef = useRef<typeof selectedNote>(null);
   const updateNoteRef = useRef(updateNote);
   const noteDataRef = useRef<typeof selectedNote>(selectedNote);
+  const selectedNoteIdRef = useRef<number | null>(null);
 
-  // Keep refs updated
+  // Current note
+  const currentNote = noteDataRef.current;
+
+  // Updated at delta
+  const updatedAtDelta = currentNote
+    ? (new Date().getTime() - (currentNote.updatedAt.getTime() || 0)) / 1000
+    : 0;
+
+  // Handlers
+  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setTitle(e.target.value);
+    debouncedSave();
+  }
+
+  function handleContentChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setContent(e.target.value);
+    debouncedSave();
+  }
+
+  function handleDeleteNote() {
+    if (!selectedNote) return;
+
+    deleteNote(selectedNote.id);
+    setIsDeleteDialogOpen(false);
+  }
+
+  const handleSaveChanges = useCallback(() => {
+    const currentSelectedNote = selectedNoteRef.current;
+    if (!currentSelectedNote) return;
+
+    setStatus(NoteEditorStatus.Saving);
+
+    const { title: currentTitle, content: currentContent } = currentValuesRef.current;
+
+    setTimeout(() => {
+      updateNoteRef.current(currentSelectedNote.id, {
+        title: currentTitle,
+        content: currentContent,
+      });
+
+      setStatus(NoteEditorStatus.Saved);
+
+      // Hide the saved status after 2 seconds
+      setTimeout(() => {
+        setStatus(null);
+      }, 2000);
+    }, 100);
+  }, []);
+
+  // Debounced save changes
+  const debouncedSave = useCallback(() => {
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = setTimeout(() => {
+      handleSaveChanges();
+    }, 3000);
+  }, [handleSaveChanges]);
+
+  // Clear save timeout on mount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Keep current values ref in sync with state
+  useEffect(() => {
+    currentValuesRef.current = { title, content };
+  }, [title, content]);
+
+  useEffect(() => {
+    if (selectedNote?.id !== selectedNoteIdRef.current) {
+      if (selectedNote) {
+        const newTitle = selectedNote.title || '';
+        const newContent = selectedNote.content || '';
+        setTitle(newTitle);
+        setContent(newContent);
+        currentValuesRef.current = { title: newTitle, content: newContent };
+      }
+      selectedNoteIdRef.current = selectedNote?.id || null;
+    }
+  }, [selectedNote]);
+
   useEffect(() => {
     selectedNoteRef.current = selectedNote;
     updateNoteRef.current = updateNote;
-    // Only update noteDataRef when selectedNote is not null
-    if (selectedNote) {
+    if (selectedNote)
       noteDataRef.current = selectedNote;
-    }
   });
 
-  // Save any pending changes before switching notes
   useEffect(() => {
     return () => {
-      // Save any pending changes before switching notes
       if (saveTimeoutRef.current) {
         clearTimeout(saveTimeoutRef.current);
-        // Trigger immediate save if there were pending changes
+
         const { title: currentTitle, content: currentContent } = currentValuesRef.current;
         const currentSelectedNote = selectedNoteRef.current;
         if (
@@ -76,90 +159,6 @@ export default function NoteEditor() {
     };
   }, [selectedNote]);
 
-  // Update local state when selectedNote changes (but not when it's just updated from our own save)
-  const selectedNoteIdRef = useRef<number | null>(null);
-  useEffect(() => {
-    if (selectedNote?.id !== selectedNoteIdRef.current) {
-      // Only update state if we're switching to a different note
-      const newTitle = selectedNote?.title || '';
-      const newContent = selectedNote?.content || '';
-      setTitle(newTitle);
-      setContent(newContent);
-      currentValuesRef.current = { title: newTitle, content: newContent };
-      selectedNoteIdRef.current = selectedNote?.id || null;
-    }
-  }, [selectedNote]);
-
-  // Keep ref in sync with state changes
-  useEffect(() => {
-    currentValuesRef.current = { title, content };
-  }, [title, content]);
-
-  const handleSaveChanges = useCallback(() => {
-    const currentSelectedNote = selectedNoteRef.current;
-    if (!currentSelectedNote) return;
-
-    setStatus(NoteEditorStatus.Saving);
-
-    // Get the most current values from the ref
-    const { title: currentTitle, content: currentContent } = currentValuesRef.current;
-
-    // Simulate async save operation
-    setTimeout(() => {
-      updateNoteRef.current(currentSelectedNote.id, {
-        title: currentTitle,
-        content: currentContent,
-      });
-
-      setStatus(NoteEditorStatus.Saved);
-
-      // Hide the saved status after 2 seconds
-      setTimeout(() => {
-        setStatus(null);
-      }, 2000);
-    }, 100);
-  }, []); // No dependencies needed since we use refs
-
-  const debouncedSave = useCallback(() => {
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-
-    saveTimeoutRef.current = setTimeout(() => {
-      handleSaveChanges();
-    }, 3000);
-  }, [handleSaveChanges]);
-
-  useEffect(() => {
-    return () => {
-      if (saveTimeoutRef.current) {
-        clearTimeout(saveTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  function handleDeleteNote() {
-    if (!selectedNote) return;
-
-    deleteNote(selectedNote.id);
-    setIsDeleteDialogOpen(false);
-  }
-
-  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setTitle(e.target.value);
-    debouncedSave();
-  }
-
-  function handleContentChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setContent(e.target.value);
-    debouncedSave();
-  }
-
-  // Use noteDataRef to access note data even during exit animation
-  const currentNote = noteDataRef.current;
-  const updateDelta = currentNote
-    ? (new Date().getTime() - (currentNote.updatedAt.getTime() || 0)) / 1000
-    : 0;
 
   return (
     <motion.div
@@ -169,6 +168,8 @@ export default function NoteEditor() {
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       className="absolute inset-0 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 flex flex-col"
     >
+
+      {/* Delete dialog */}
       <AnimatePresence>
         {isDeleteDialogOpen && (
           <Portal>
@@ -176,12 +177,16 @@ export default function NoteEditor() {
           </Portal>
         )}
       </AnimatePresence>
+
+      {/* Title */}
       <input
         className="text-4xl font-semibold focus:outline-none"
         value={title}
         onChange={handleTitleChange}
         placeholder="Your note title..."
       />
+
+      {/* Content */}
       <textarea
         className="text-base/snug text-foreground-secondary focus:outline-none flex-1 resize-none"
         value={content}
@@ -197,13 +202,13 @@ export default function NoteEditor() {
         <TrashIcon weight="bold" className="transition-all duration-300" />
       </button>
 
-      {/* Status indicator / last edited at */}
+      {/* Status indicator & last edited at */}
       <div className="absolute bottom-3 left-4 text-xs">
         {status ? (
           <StatusIndicator status={status} />
         ) : (
           <span className="text-foreground-muted">
-            Last edited {formatRelativeTime(updateDelta)} {updateDelta >= 60 && 'ago'}
+            Last edited {formatRelativeTime(updatedAtDelta)} {updatedAtDelta >= 60 && 'ago'}
           </span>
         )}
       </div>
