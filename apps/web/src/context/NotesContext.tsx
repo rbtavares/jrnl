@@ -5,6 +5,12 @@ import { NoteSchema } from '../lib/types';
 import axios from 'axios';
 import { z } from 'zod';
 
+// Get API URL from environment variables
+const API_URL = import.meta.env.VITE_API_URL;
+if (!API_URL) {
+  throw new Error('VITE_API_URL is not set');
+}
+
 // Actions for the notes reducer
 type NotesAction =
   | { type: 'SET_NOTES'; payload: Note[] }
@@ -22,13 +28,14 @@ interface NotesContextType {
 
   // Notes
   notes: Note[];
+  setNotes: (notes: Note[]) => void;
   fetchNotes: () => void;
+
   selectNote: (id: number | null) => void;
   selectedNote: Note | null;
   addNote: (noteData?: Pick<Note, 'title' | 'content'>) => void;
   updateNote: (id: number, updates: Partial<Pick<Note, 'title' | 'content'>>) => void;
   deleteNote: (id: number) => void;
-  setNotes: (notes: Note[]) => void;
 }
 
 // Reducer function
@@ -58,6 +65,9 @@ interface NotesProviderProps {
 }
 
 export function NotesProvider({ children }: NotesProviderProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [notes, dispatch] = useReducer(notesReducer, [] as Note[]);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
@@ -71,9 +81,6 @@ export function NotesProvider({ children }: NotesProviderProps) {
     }
   }, [notes, selectedNote]);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -85,9 +92,8 @@ export function NotesProvider({ children }: NotesProviderProps) {
     try {
       setIsLoading(true);
       setError(null);
-      const response = await axios.get('http://localhost:3000/entries');
+      const response = await axios.get(`${API_URL}/entries`);
 
-      // Parse and validate the notes using Zod schema
       const notesArray = z
         .array(NoteSchema)
         .parse(
@@ -120,7 +126,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
     try {
       setError(null);
       const response = await axios.post(
-        'http://localhost:3000/entries',
+        `${API_URL}/entries`,
         noteData || { title: '', content: '' }
       );
 
@@ -148,7 +154,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
   const updateNote = async (id: number, updates: Partial<Pick<Note, 'title' | 'content'>>) => {
     try {
       setError(null);
-      await axios.put(`http://localhost:3000/entries/${id}`, updates);
+      await axios.put(`${API_URL}/entries/${id}`, updates);
 
       dispatch({ type: 'UPDATE_NOTE', payload: { id, ...updates } });
       return;
@@ -166,7 +172,7 @@ export function NotesProvider({ children }: NotesProviderProps) {
   const deleteNote = async (id: number) => {
     try {
       setError(null);
-      await axios.delete(`http://localhost:3000/entries/${id}`);
+      await axios.delete(`${API_URL}/entries/${id}`);
       dispatch({ type: 'DELETE_NOTE', payload: id });
       setSelectedNote(null);
     } catch (error) {

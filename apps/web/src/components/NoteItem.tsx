@@ -27,6 +27,7 @@ export default function NoteItem({
       )}
       onClick={() => onClick(note)}
     >
+      {/* Title and last updated at */}
       <div className="flex justify-between items-end gap-2">
         <AnimatePresence mode="wait">
           <motion.h1
@@ -40,10 +41,20 @@ export default function NoteItem({
             {note.title || 'Untitled Note'}
           </motion.h1>
         </AnimatePresence>
-        <span className="text-xs text-foreground-muted font-light tracking-wide mb-1 whitespace-nowrap flex-shrink-0">
-          {formatRelativeTime((new Date().getTime() - note.updatedAt.getTime()) / 1000)}
-        </span>
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={note.updatedAt.getTime()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: note.title ? 1 : 0.5 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: 'linear' }}
+            className="text-xs text-foreground-muted font-light tracking-wide mb-1 whitespace-nowrap flex-shrink-0">
+            {formatRelativeTime((new Date().getTime() - note.updatedAt.getTime()) / 1000)}
+          </motion.span>
+        </AnimatePresence>
       </div>
+
+      {/* Content */}
       <AnimatePresence mode="wait">
         <motion.p
           key={note.content || 'empty'}

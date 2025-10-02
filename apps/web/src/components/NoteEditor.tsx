@@ -2,7 +2,7 @@ import { CheckCircleIcon, CircleNotchIcon, TrashIcon } from '@phosphor-icons/rea
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNotes } from '../context/NotesContext';
 import { formatRelativeTime } from '../lib/utils';
-import Dialog from './Dialog';
+import Dialog from './DeleteDialog';
 import Portal from './Portal';
 import { motion } from 'motion/react';
 import { AnimatePresence } from 'motion/react';
@@ -157,7 +157,9 @@ export default function NoteEditor() {
 
   // Use noteDataRef to access note data even during exit animation
   const currentNote = noteDataRef.current;
-  const updateDelta = currentNote ? (new Date().getTime() - (currentNote.updatedAt.getTime() || 0)) / 1000 : 0;
+  const updateDelta = currentNote
+    ? (new Date().getTime() - (currentNote.updatedAt.getTime() || 0)) / 1000
+    : 0;
 
   return (
     <motion.div
@@ -165,7 +167,8 @@ export default function NoteEditor() {
       animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
       exit={{ opacity: 0, x: 50, filter: 'blur(10px)' }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="absolute inset-0 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 flex flex-col">
+      className="absolute inset-0 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 flex flex-col"
+    >
       <AnimatePresence>
         {isDeleteDialogOpen && (
           <Portal>

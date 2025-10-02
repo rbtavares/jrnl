@@ -42,11 +42,9 @@ export default function EditorScreen() {
           {/* Note editor */}
           <div className="flex-1 relative">
             <AnimatePresence>
-              {selectedNote && (
-                <NoteEditor key={selectedNote.id} />
-              )}
+              {selectedNote && <NoteEditor key={selectedNote.id} />}
             </AnimatePresence>
-            
+
             {!selectedNote && notes.length > 0 && (
               <motion.h1
                 initial={{ opacity: 0, filter: 'blur(15px)' }}
@@ -57,7 +55,7 @@ export default function EditorScreen() {
                 select a note or create a new one to begin writing
               </motion.h1>
             )}
-            
+
             {!selectedNote && notes.length === 0 && (
               <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
                 <motion.h1

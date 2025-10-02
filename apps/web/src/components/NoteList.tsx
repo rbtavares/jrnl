@@ -8,7 +8,6 @@ export default function NoteList() {
   const { notes, selectNote, addNote, selectedNote, isLoading } = useNotes();
   const hasAnimatedInitialLoad = useRef(false);
 
-  // Mark that initial animation has occurred when notes are first loaded
   useEffect(() => {
     if (!isLoading && !hasAnimatedInitialLoad.current) {
       hasAnimatedInitialLoad.current = true;
@@ -39,7 +38,6 @@ export default function NoteList() {
             <NoteItem
               note={note}
               onClick={() => {
-                // If this note is already selected, unselect it; otherwise select it
                 if (selectedNote?.id === note.id) {
                   selectNote(null);
                 } else {
