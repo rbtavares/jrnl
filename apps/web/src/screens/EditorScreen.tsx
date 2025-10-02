@@ -40,14 +40,25 @@ export default function EditorScreen() {
           <NoteList />
 
           {/* Note editor */}
-          {selectedNote ? (
-            <NoteEditor />
-          ) : notes.length > 0 ? (
-            <h1 className="font-light text-lg tracking-wide flex-1 flex items-center justify-center text-foreground-muted">
-              select a note or create a new one to begin writing
-            </h1>
-          ) : (
-            <AnimatePresence mode="wait">
+          <div className="flex-1 relative">
+            <AnimatePresence>
+              {selectedNote && (
+                <NoteEditor key={selectedNote.id} />
+              )}
+            </AnimatePresence>
+            
+            {!selectedNote && notes.length > 0 && (
+              <motion.h1
+                initial={{ opacity: 0, filter: 'blur(15px)' }}
+                animate={{ opacity: 1, filter: 'blur(0px)' }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                className="font-light text-lg tracking-wide absolute inset-0 flex items-center justify-center text-foreground-muted"
+              >
+                select a note or create a new one to begin writing
+              </motion.h1>
+            )}
+            
+            {!selectedNote && notes.length === 0 && (
               <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
                 <motion.h1
                   initial={{ opacity: 0, filter: 'blur(15px)' }}
@@ -58,8 +69,8 @@ export default function EditorScreen() {
                   create a note to begin <span className="font-borel">your</span> writing journey
                 </motion.h1>
               </div>
-            </AnimatePresence>
-          )}
+            )}
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

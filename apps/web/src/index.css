@@ -33,7 +33,7 @@
   /* Card */
   --color-card: #FFFFFF;
   --color-card-border: #F0F0F0;
-  --color-destructive: #FF4444;
+  --color-destructive: #FF3F3F;
   --color-outline: #353535;
   --shadow-card: 0px 0px 3px rgba(0, 0, 0, 0.01),
     0px 0px 11px rgba(0, 0, 0, 0.02),

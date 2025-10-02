@@ -3,6 +3,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNotes } from '../context/NotesContext';
 import { formatRelativeTime } from '../lib/utils';
 import Dialog from './Dialog';
+import Portal from './Portal';
+import { motion } from 'motion/react';
+import { AnimatePresence } from 'motion/react';
 
 // Note Editor Status
 const NoteEditorStatus = { Saving: 'saving', Saved: 'saved' } as const;
@@ -38,11 +41,16 @@ export default function NoteEditor() {
   const currentValuesRef = useRef({ title: '', content: '' });
   const selectedNoteRef = useRef<typeof selectedNote>(null);
   const updateNoteRef = useRef(updateNote);
+  const noteDataRef = useRef<typeof selectedNote>(selectedNote);
 
   // Keep refs updated
   useEffect(() => {
     selectedNoteRef.current = selectedNote;
     updateNoteRef.current = updateNote;
+    // Only update noteDataRef when selectedNote is not null
+    if (selectedNote) {
+      noteDataRef.current = selectedNote;
+    }
   });
 
   // Save any pending changes before switching notes
@@ -147,48 +155,55 @@ export default function NoteEditor() {
     debouncedSave();
   }
 
-  if (!selectedNote) return null;
-
-  const updateDelta = (new Date().getTime() - (selectedNote.updatedAt.getTime() || 0)) / 1000;
+  // Use noteDataRef to access note data even during exit animation
+  const currentNote = noteDataRef.current;
+  const updateDelta = currentNote ? (new Date().getTime() - (currentNote.updatedAt.getTime() || 0)) / 1000 : 0;
 
   return (
-    <>
-      {isDeleteDialogOpen && (
-        <Dialog onCancel={() => setIsDeleteDialogOpen(false)} onDelete={handleDeleteNote} />
-      )}
-      <div className="flex-1 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 relative flex flex-col">
-        <input
-          className="text-4xl font-semibold focus:outline-none"
-          value={title}
-          onChange={handleTitleChange}
-          placeholder="Your note title..."
-        />
-        <textarea
-          className="text-base/snug text-foreground-secondary focus:outline-none flex-1 resize-none"
-          value={content}
-          onChange={handleContentChange}
-          placeholder="A long note about your day..."
-        />
+    <motion.div
+      initial={{ opacity: 0, x: 50, filter: 'blur(10px)' }}
+      animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, x: 50, filter: 'blur(10px)' }}
+      transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+      className="absolute inset-0 bg-card shadow-card rounded-xl border border-card-border p-8 gap-4 flex flex-col">
+      <AnimatePresence>
+        {isDeleteDialogOpen && (
+          <Portal>
+            <Dialog onCancel={() => setIsDeleteDialogOpen(false)} onDelete={handleDeleteNote} />
+          </Portal>
+        )}
+      </AnimatePresence>
+      <input
+        className="text-4xl font-semibold focus:outline-none"
+        value={title}
+        onChange={handleTitleChange}
+        placeholder="Your note title..."
+      />
+      <textarea
+        className="text-base/snug text-foreground-secondary focus:outline-none flex-1 resize-none"
+        value={content}
+        onChange={handleContentChange}
+        placeholder="A long note about your day..."
+      />
 
-        {/* Editor actions */}
-        <button
-          className="hover:scale-110 active:scale-95 absolute bottom-3 right-3 aspect-square p-1.5 flex items-center justify-center cursor-pointer text-red-500/50 hover:text-red-500/100 transition-all duration-300"
-          onClick={() => setIsDeleteDialogOpen(true)}
-        >
-          <TrashIcon weight="bold" className="transition-all duration-300" />
-        </button>
+      {/* Editor actions */}
+      <button
+        className="hover:scale-110 active:scale-95 absolute bottom-3 right-3 aspect-square p-1.5 flex items-center justify-center cursor-pointer text-red-500/50 hover:text-red-500/100 transition-all duration-300"
+        onClick={() => setIsDeleteDialogOpen(true)}
+      >
+        <TrashIcon weight="bold" className="transition-all duration-300" />
+      </button>
 
-        {/* Status indicator / last edited at */}
-        <div className="absolute bottom-3 left-4 text-xs">
-          {status ? (
-            <StatusIndicator status={status} />
-          ) : (
-            <span className="text-foreground-muted">
-              Last edited {formatRelativeTime(updateDelta)} {updateDelta >= 60 && 'ago'}
-            </span>
-          )}
-        </div>
+      {/* Status indicator / last edited at */}
+      <div className="absolute bottom-3 left-4 text-xs">
+        {status ? (
+          <StatusIndicator status={status} />
+        ) : (
+          <span className="text-foreground-muted">
+            Last edited {formatRelativeTime(updateDelta)} {updateDelta >= 60 && 'ago'}
+          </span>
+        )}
       </div>
-    </>
+    </motion.div>
   );
 }
